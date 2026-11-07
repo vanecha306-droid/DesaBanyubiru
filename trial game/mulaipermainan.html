@@ -1,0 +1,189 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desa Pesisir - Pilih Chapter</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="game-screen">
+
+    <!-- Background -->
+    <div class="sun"></div>
+    <div class="cloud cloud1">☁</div>
+    <div class="cloud cloud2">☁</div>
+
+    <div class="mountain mountain1"></div>
+    <div class="mountain mountain2"></div>
+
+    <div class="village">
+        <div class="house"></div>
+        <div class="house"></div>
+        <div class="house"></div>
+    </div>
+
+    <div class="field"></div>
+    <div class="sea"></div>
+
+    <div class="tree tree-left">🌳</div>
+    <div class="tree tree-right">🌴</div>
+
+    <!-- Chapter Menu -->
+    <main class="chapter-container" id="chapterMenu">
+
+        <button class="back-button" onclick="backToMenu()">
+            ← Kembali
+        </button>
+
+        <h1 class="main-title">PERJALANAN DIMULAI</h1>
+
+        <p class="subtitle">
+            Pilih chapter yang ingin kamu jelajahi
+        </p>
+
+        <div class="chapter-list">
+
+            <div class="chapter-card unlocked"
+     data-chapter="chapter1"
+     onclick="openChapter(1)">
+
+                <div class="chapter-number">01</div>
+
+                <div class="chapter-info">
+                    <h2>KEMBALI</h2>
+                    <p>Segala perjalanan memiliki permulaan.</p>
+                    <span class="status">▶ MULAI</span>
+                </div>
+
+            </div>
+
+           <div class="chapter-card locked"
+     data-chapter="chapter2"
+     onclick="openChapter(2)">
+
+                <div class="chapter-info">
+                    <h2>Rahasia Desa</h2>
+                    <p>Masih ada sesuatu yang tersembunyi.</p>
+                    <span class="status">🔒 TERKUNCI</span>
+                </div>
+            </div>
+
+            <div class="chapter-card locked"
+     data-chapter="chapter3"
+     onclick="openChapter(3)">
+
+                <div class="chapter-info">
+                    <h2>Jejak Masa Lalu</h2>
+                    <p>Setiap tempat menyimpan kenangan.</p>
+                    <span class="status">🔒 TERKUNCI</span>
+                </div>
+            </div>
+
+            <div class="chapter-card locked"
+     data-chapter="chapter4"
+     onclick="openChapter(4)">
+
+                <div class="chapter-info">
+                    <h2>Di Balik Kabut</h2>
+                    <p>Misteri mulai terungkap.</p>
+                    <span class="status">🔒 TERKUNCI</span>
+                </div>
+            </div>
+
+            <div class="chapter-card locked"
+     data-chapter="chapter5"
+     onclick="openChapter(5)">
+                <div class="chapter-info">
+                    <h2>Akhir Perjalanan</h2>
+                    <p>Semua kisah akan menemukan akhir.</p>
+                    <span class="status">🔒 TERKUNCI</span>
+                </div>
+            </div>
+
+        </div>
+
+        <p class="footer">
+            DESA BANYUBIRU • SEBUAH KISAH DARI TANAH JAWA
+        </p>
+
+    </main>
+
+    <!-- Story Preview -->
+    <section class="story-screen" id="storyScreen">
+
+        <div class="story-box">
+
+            <span class="story-label">CHAPTER 01</span>
+
+            <h1>KEMBALI</h1>
+
+            <p>
+                Di sebuah desa kecil di tanah Jawa,
+                tersimpan kisah yang belum pernah
+                diceritakan kepada siapa pun...
+            </p>
+
+            <p>
+                Sebuah perjalanan baru akan segera dimulai.
+            </p>
+
+            <button onclick="startStory()">
+                Mulai Cerita →
+            </button>
+
+            <button class="secondary-button"
+                    onclick="closeChapter()">
+                Kembali ke Chapter
+            </button>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+(async function checkPlayerLogin() {
+    const client = window.supabase.createClient(
+        "https://qwoabxhswjqgsamwgxex.supabase.co",
+        "sb_publishable_xfUCirPUJRXzHqz71JbFpg_71gnKcRQ"
+    );
+
+    const { data, error } = await client.auth.getSession();
+
+    if (error || !data.session) {
+        window.location.replace("login.html");
+        return;
+    }
+
+    const { data: profile, error: profileError } = await client
+        .from("profiles")
+        .select("role")
+        .eq("id", data.session.user.id)
+        .single();
+
+    if (profileError || !profile || profile.role !== "player") {
+        await client.auth.signOut();
+        window.location.replace("login.html");
+    }
+})();
+</script>
+
+<script src="chapter.js"></script>
+
+<script>
+function startStory() {
+    window.location.href = "chapter1.html";
+}
+</script>
+
+</body>
+</html>
+
+</html>

@@ -554,24 +554,28 @@ let storyFinished = false;
 
 
 // ==========================================
-// SISTEM AUDIO
+// SISTEM AUDIO TANPA DUBBING
 // ==========================================
 
+// Musik latar
 const bgm = new Audio("audio/bgm-desa.mp3");
 bgm.loop = true;
 bgm.volume = 0.1;
 
+// Suara ambience
 const ambience = new Audio("audio/ambience-sawah.mp3");
 ambience.loop = true;
 ambience.volume = 0.5;
 
+// Suara mesin mobil
 const carSound = new Audio("audio/suara-mobil.mp3");
 carSound.loop = true;
 carSound.volume = 0.4;
 
 let audioStarted = false;
-let currentVoice = null;
 
+
+// Mulai musik dan ambience
 function startAudio() {
     if (audioStarted) return;
 
@@ -581,6 +585,8 @@ function startAudio() {
     ambience.play().catch(() => {});
 }
 
+
+// Efek suara
 function playSFX(file, volume = 0.7) {
     if (!file) return;
 
@@ -589,24 +595,10 @@ function playSFX(file, volume = 0.7) {
     sound.play().catch(() => {});
 }
 
-function playVoice(file) {
-    // Hentikan suara dialog sebelumnya
-    if (currentVoice) {
-        currentVoice.pause();
-        currentVoice.currentTime = 0;
-    }
 
-    if (!file) {
-        currentVoice = null;
-        return;
-    }
-
-    currentVoice = new Audio(file);
-    currentVoice.volume = 1;
-    currentVoice.play().catch(() => {});
-}
-
+// Mengatur audio berdasarkan adegan
 function updateSceneAudio(scene) {
+
     // Suara mesin mobil
     if (scene.engine) {
         carSound.play().catch(() => {});
@@ -619,9 +611,6 @@ function updateSceneAudio(scene) {
     if (scene.sfx) {
         playSFX(scene.sfx);
     }
-
-    // Suara karakter atau narator
-    playVoice(scene.voice);
 }
 
 
@@ -673,7 +662,7 @@ function showScene() {
         nextButton.textContent = "Selanjutnya →";
     }
 
-    // Jalankan audio adegan
+    // Jalankan audio adegan tanpa dubbing
     updateSceneAudio(scene);
 }
 
@@ -693,19 +682,19 @@ function nextScene() {
 
         const scene = scenes[currentScene];
 
-      if (scene.fadeBefore) {
-    const fade = document.getElementById("fadeTransition");
+        if (scene.fadeBefore) {
+            const fade = document.getElementById("fadeTransition");
 
-    fade.classList.add("active");
+            fade.classList.add("active");
 
-    setTimeout(() => {
-        showScene();
-        fade.classList.remove("active");
-    }, 5000);
+            setTimeout(() => {
+                showScene();
+                fade.classList.remove("active");
+            }, 5000);
 
-} else {
-    showScene();
-}
+        } else {
+            showScene();
+        }
 
     } else {
         finishStory();
@@ -716,6 +705,7 @@ function nextScene() {
 // ==========================================
 // CHAPTER SELESAI
 // ==========================================
+
 function playChapterCompleteSound() {
     const audio = new AudioContext();
 
@@ -741,17 +731,15 @@ function playChapterCompleteSound() {
     });
 }
 
+
 function finishStory() {
     playChapterCompleteSound();
 
     document.getElementById("chapterComplete").classList.add("show");
 
-
     storyFinished = true;
 
-    // Hentikan semua audio adegan
-    playVoice(null);
-
+    // Hentikan suara mesin mobil
     carSound.pause();
     carSound.currentTime = 0;
 

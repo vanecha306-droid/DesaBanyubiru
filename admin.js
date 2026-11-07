@@ -403,7 +403,6 @@ createPlayerForm.addEventListener("submit", async function(event) {
     event.preventDefault();
 
     const username = document.getElementById("newUsername").value.trim();
-    const email = document.getElementById("newEmail").value.trim();
     const password = document.getElementById("newPassword").value;
 
     createPlayerButton.disabled = true;
@@ -414,7 +413,7 @@ createPlayerForm.addEventListener("submit", async function(event) {
         const { data, error } = await supabaseClient.functions.invoke(
             "create-player-account",
             {
-                body: { username, email, password }
+                body: { username, password }
             }
         );
 

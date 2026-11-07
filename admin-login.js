@@ -14,7 +14,7 @@ const adminLoginMessage = document.getElementById("adminLoginMessage");
 adminLoginForm.addEventListener("submit", async function(event) {
     event.preventDefault();
 
-    const email = document.getElementById("email").value.trim();
+    const username = document.getElementById("username").value.trim();
     const password = document.getElementById("password").value;
 
     adminLoginButton.disabled = true;
@@ -22,21 +22,39 @@ adminLoginForm.addEventListener("submit", async function(event) {
     adminLoginMessage.textContent = "";
 
     try {
-        // Memeriksa email dan password
-        const { data, error } =
-            await supabaseClient.auth.signInWithPassword({
-                email: email,
-                password: password
-            });
+        // Login menggunakan username dan password
+        const { data, error } = await supabaseClient.functions.invoke(
+            "login-with-username",
+            {
+                body: {
+                    username,
+                    password
+                }
+            }
+        );
 
         if (error) throw error;
+        if (data?.error) throw new Error(data.error);
 
-        // Mengambil role akun
+        if (!data?.session?.access_token || !data?.session?.refresh_token) {
+            throw new Error("Sesi login tidak berhasil dibuat.");
+        }
+
+        // Simpan sesi login ke Supabase
+        const { data: sessionData, error: sessionError } =
+            await supabaseClient.auth.setSession({
+                access_token: data.session.access_token,
+                refresh_token: data.session.refresh_token
+            });
+
+        if (sessionError) throw sessionError;
+
+        // Periksa role akun
         const { data: profile, error: profileError } =
             await supabaseClient
                 .from("profiles")
                 .select("username, role")
-                .eq("id", data.user.id)
+                .eq("id", sessionData.user.id)
                 .single();
 
         if (profileError || !profile) {
@@ -54,6 +72,8 @@ adminLoginForm.addEventListener("submit", async function(event) {
         window.location.href = "admin.html";
 
     } catch (error) {
+        console.error(error);
+
         adminLoginMessage.textContent =
             error.message || "Login admin gagal.";
 

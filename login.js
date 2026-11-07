@@ -1,8 +1,4 @@
 
- // =====================================
- // KONEKSI SUPABASE
- // =====================================
-
 const SUPABASE_URL = "https://qwoabxhswjqgsamwgxex.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_xfUCirPUJRXzHqz71JbFpg_71gnKcRQ";
 
@@ -10,7 +6,6 @@ const supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_PUBLISHABLE_KEY
 );
-
 
 // =====================================
 // PROSES LOGIN PEMAIN
@@ -21,10 +16,9 @@ const loginButton = document.getElementById("loginButton");
 const loginMessage = document.getElementById("loginMessage");
 
 loginForm.addEventListener("submit", async function(event) {
-
     event.preventDefault();
 
-    const email = document.getElementById("email").value.trim();
+    const username = document.getElementById("username").value.trim();
     const password = document.getElementById("password").value;
 
     loginButton.disabled = true;
@@ -32,24 +26,39 @@ loginForm.addEventListener("submit", async function(event) {
     loginMessage.textContent = "";
 
     try {
+        // Login menggunakan username dan password
+        const { data, error } = await supabaseClient.functions.invoke(
+            "login-with-username",
+            {
+                body: {
+                    username,
+                    password
+                }
+            }
+        );
 
-        // Login ke Supabase
-        const { data, error } =
-            await supabaseClient.auth.signInWithPassword({
-                email: email,
-                password: password
+        if (error) throw error;
+        if (data?.error) throw new Error(data.error);
+
+        if (!data?.session?.access_token || !data?.session?.refresh_token) {
+            throw new Error("Sesi login tidak berhasil dibuat.");
+        }
+
+        // Simpan sesi login ke Supabase di browser
+        const { data: sessionData, error: sessionError } =
+            await supabaseClient.auth.setSession({
+                access_token: data.session.access_token,
+                refresh_token: data.session.refresh_token
             });
 
-        if (error) {
-            throw error;
-        }
+        if (sessionError) throw sessionError;
 
         // Periksa profil dan jenis akun
         const { data: profile, error: profileError } =
             await supabaseClient
                 .from("profiles")
                 .select("username, role")
-                .eq("id", data.user.id)
+                .eq("id", sessionData.user.id)
                 .single();
 
         if (profileError || !profile) {
@@ -73,13 +82,12 @@ loginForm.addEventListener("submit", async function(event) {
         window.location.href = "index.html";
 
     } catch (error) {
+        console.error(error);
 
         loginMessage.textContent =
             error.message || "Login gagal. Silakan coba lagi.";
 
         loginButton.disabled = false;
         loginButton.textContent = "MASUK";
-
     }
-
 });

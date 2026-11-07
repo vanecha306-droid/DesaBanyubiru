@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buku Karakter - Desa Banyubiru</title>
+    <link rel="stylesheet" href="karakter.css">
+</head>
+
+<body>
+
+    <main class="container">
+
+        <header class="header">
+            <p class="small-title">DESA BANYUBIRU</p>
+            <h1>❖ BUKU KARAKTER ❖</h1>
+            <p class="subtitle">Kenali mereka dan kisah di baliknya</p>
+        </header>
+
+        <!-- DAFTAR KARAKTER -->
+        <section id="characterList">
+            <div class="character-grid" id="characterGrid"></div>
+        </section>
+
+        <!-- DETAIL PROFIL -->
+        <section id="characterDetail" class="detail-page">
+
+            <button class="back-button" onclick="showCharacterList()">
+                ← Kembali ke Daftar Karakter
+            </button>
+
+            <div id="detailContent"></div>
+
+        </section>
+
+        <button class="home-button"
+            onclick="window.location.href='index.html'">
+            ⌂ Kembali ke Menu Utama
+        </button>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://qwoabxhswjqgsamwgxex.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_xfUCirPUJRXzHqz71JbFpg_71gnKcRQ";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+);
+
+async function checkLogin() {
+    const { data, error } = await supabaseClient.auth.getSession();
+
+    if (error || !data.session) {
+        window.location.replace("login.html");
+        return;
+    }
+
+    const { data: profile, error: profileError } =
+        await supabaseClient
+            .from("profiles")
+            .select("role")
+            .eq("id", data.session.user.id)
+            .single();
+
+    if (profileError || !profile || profile.role !== "player") {
+        await supabaseClient.auth.signOut();
+        window.location.replace("login.html");
+    }
+}
+
+checkLogin();
+</script>
+
+<script src="karakter.js"></script>
+
+</body>
+</html>

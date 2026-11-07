@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desa Banyubiru - Chapter 2</title>
+    <link rel="stylesheet" href="chapter2.css">
+</head>
+
+<body>
+
+    <main class="scene-container">
+
+        <div class="scene-background">
+            <div class="village-gate" id="villageGate">
+                <div class="gate-pillar left-pillar"></div>
+                <div class="gate-pillar right-pillar"></div>
+                <div class="gate-beam"></div>
+                <div class="gate-sign">DESA BANYUBIRU</div>
+            </div>
+
+            <img id="characterImage" class="character-sprite" src="" alt="Karakter">
+        </div>
+
+        <section class="dialog-container">
+            <div class="dialog-name" id="speaker">NARATOR</div>
+
+            <p class="dialog-text" id="dialogText">
+                Chapter 2 akan segera dimulai...
+            </p>
+
+            <div class="dialog-footer">
+                <span class="scene-number" id="sceneNumber">CHAPTER 02</span>
+                <button id="nextButton">Selanjutnya →</button>
+            </div>
+        </section>
+
+        <button class="exit-story" id="exitButton">
+            ✕ Keluar
+        </button>
+
+    </main>
+
+    <div class="fade-transition" id="fadeTransition"></div>
+
+    <div class="chapter-complete" id="chapterComplete">
+        <div class="complete-content">
+            <p>✦ CHAPTER 2 ✦</p>
+            <h1>COMPLETED</h1>
+            <span>Perjalanan akan berlanjut...</span>
+
+            <button onclick="backToChapter()">
+            Kembali ke Daftar Chapter →
+        </button>
+        
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+(async function checkChapter2Access() {
+    const client = window.supabase.createClient(
+        "https://qwoabxhswjqgsamwgxex.supabase.co",
+        "sb_publishable_xfUCirPUJRXzHqz71JbFpg_71gnKcRQ"
+    );
+
+    const { data, error } = await client.auth.getSession();
+
+    if (error || !data.session) {
+        window.location.replace("login.html");
+        return;
+    }
+
+    const { data: profile, error: profileError } = await client
+        .from("profiles")
+        .select("role")
+        .eq("id", data.session.user.id)
+        .single();
+
+    if (profileError || !profile || profile.role !== "player") {
+        await client.auth.signOut();
+        window.location.replace("login.html");
+        return;
+    }
+
+    const { data: access, error: accessError } = await client
+        .from("chapter_access")
+        .select("is_unlocked")
+        .eq("user_id", data.session.user.id)
+        .eq("chapter_id", "chapter2")
+        .maybeSingle();
+
+    if (accessError || !access || access.is_unlocked !== true) {
+        window.location.replace("mulaipermainan.html");
+    }
+})();
+</script>
+
+    <script src="chapter2.js"></script>
+
+</body>
+</html>

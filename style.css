@@ -1,0 +1,384 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+    color: white;
+}
+
+.game-screen {
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(
+        #f49b91,
+        #f8bd91 45%,
+        #f4d29c
+    );
+    padding: 35px 15px;
+}
+
+/* BACKGROUND */
+
+.sun {
+    position: fixed;
+    top: 12%;
+    right: 17%;
+    width: 120px;
+    height: 120px;
+    background: #ffe7a5;
+    border-radius: 50%;
+    box-shadow: 0 0 55px #ffe5a5;
+}
+
+.cloud {
+    position: fixed;
+    color: #fff4e5;
+    font-size: 65px;
+    opacity: .5;
+    animation: clouds 35s linear infinite;
+}
+
+.cloud1 {
+    top: 12%;
+    left: -100px;
+}
+
+.cloud2 {
+    top: 28%;
+    left: -200px;
+    animation-delay: -15s;
+}
+
+@keyframes clouds {
+    to {
+        transform: translateX(120vw);
+    }
+}
+
+.mountain {
+    position: fixed;
+    bottom: 25%;
+    width: 0;
+    height: 0;
+    border-left: 180px solid transparent;
+    border-right: 180px solid transparent;
+    border-bottom: 250px solid #a27d87;
+}
+
+.mountain1 {
+    left: 10%;
+}
+
+.mountain2 {
+    left: 45%;
+    border-bottom-color: #927487;
+    border-bottom-width: 290px;
+}
+
+.village {
+    position: fixed;
+    bottom: 22%;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: end;
+    z-index: 1;
+}
+
+.house {
+    width: 100px;
+    height: 80px;
+    background: #b8754e;
+    border: 3px solid #704a39;
+    position: relative;
+}
+
+.house::before {
+    content: "";
+    position: absolute;
+    width: 120px;
+    height: 45px;
+    left: -13px;
+    top: -42px;
+    background: #754735;
+    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+
+.field {
+    position: fixed;
+    bottom: 0;
+    height: 35%;
+    width: 100%;
+    left: 0;
+    background: linear-gradient(#87974d, #4c633b);
+    z-index: 1;
+}
+
+.sea {
+    position: fixed;
+    bottom: 0;
+    height: 10%;
+    width: 100%;
+    left: 0;
+    background: linear-gradient(#75b9b4, #367f88);
+    z-index: 2;
+}
+
+.tree {
+    position: fixed;
+    bottom: 12%;
+    font-size: 90px;
+    z-index: 3;
+}
+
+.tree-left {
+    left: 1%;
+}
+
+.tree-right {
+    right: 2%;
+}
+
+/* MAIN CONTAINER */
+
+.chapter-container {
+    position: relative;
+    z-index: 5;
+    max-width: 850px;
+    margin: auto;
+    text-align: center;
+}
+
+.back-button {
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: 10px 20px;
+    border: 2px solid #ffe6b8;
+    background: #86543b;
+    color: white;
+    border-radius: 25px;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.back-button:hover {
+    background: #ad7550;
+}
+
+.main-title {
+    margin-top: 35px;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(30px, 5vw, 48px);
+    color: #fff2ce;
+    text-shadow: 3px 4px 0 #75462e;
+}
+
+.subtitle {
+    font-size: 13px;
+    letter-spacing: 2px;
+    margin: 10px 0 25px;
+    color: white;
+    text-shadow: 1px 2px 3px #69452f;
+}
+
+/* CHAPTER CARDS */
+
+.chapter-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 650px;
+    margin: auto;
+}
+
+.chapter-card {
+    display: flex;
+    align-items: center;
+    text-align: left;
+    padding: 15px 22px;
+    min-height: 95px;
+    background: linear-gradient(
+        135deg,
+        #fff1d6,
+        #e6c18d
+    );
+    border: 3px solid #a8754e;
+    border-radius: 16px;
+    color: #70452e;
+    box-shadow: 0 5px 0 #80523b;
+    transition: .3s;
+}
+
+.unlocked {
+    cursor: pointer;
+}
+
+.unlocked:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 10px 0 #80523b;
+    background: #fff8e6;
+}
+
+.locked {
+    opacity: .72;
+    filter: saturate(.65);
+}
+
+.chapter-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    font-weight: 800;
+    margin-right: 25px;
+    color: #a36b43;
+    border-right: 2px solid #b98a60;
+    padding-right: 20px;
+}
+
+.chapter-info h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    margin-bottom: 3px;
+}
+
+.chapter-info p {
+    font-size: 11px;
+    color: #805a40;
+}
+
+.status {
+    display: inline-block;
+    margin-top: 5px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.locked .status {
+    color: #92765e;
+}
+
+.footer {
+    margin-top: 30px;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: #fff4d9;
+    text-shadow: 1px 2px 3px #513b2b;
+}
+
+/* STORY SCREEN */
+
+.story-screen {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    background: linear-gradient(
+        #ef9e8b,
+        #e8b77c,
+        #6b8050
+    );
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.story-box {
+    max-width: 600px;
+    width: 100%;
+    padding: 35px;
+    background: #fff0d2;
+    border: 4px solid #a8754e;
+    border-radius: 20px;
+    text-align: center;
+    color: #70452e;
+    box-shadow: 0 10px 30px #0004;
+}
+
+.story-label {
+    font-size: 12px;
+    letter-spacing: 3px;
+}
+
+.story-box h1 {
+    font-family: 'Playfair Display', serif;
+    margin: 15px 0;
+}
+
+.story-box p {
+    line-height: 1.8;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.story-box button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+    background: #91603f;
+    border: none;
+    color: white;
+    border-radius: 25px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 600;
+}
+
+.story-box button:hover {
+    background: #b47a50;
+}
+
+.story-box .secondary-button {
+    background: #c8a57c;
+    color: #513c2b;
+}
+
+/* MOBILE */
+
+@media(max-width: 600px) {
+
+    .game-screen {
+        padding-top: 25px;
+    }
+
+    .chapter-container {
+        padding-top: 40px;
+    }
+
+    .chapter-card {
+        padding: 12px;
+        min-height: 90px;
+    }
+
+    .chapter-number {
+        font-size: 32px;
+        margin-right: 12px;
+        padding-right: 12px;
+    }
+
+    .chapter-info h2 {
+        font-size: 16px;
+    }
+
+    .chapter-info p {
+        font-size: 10px;
+    }
+
+    .back-button {
+        font-size: 11px;
+        padding: 8px 13px;
+    }
+
+    .tree {
+        font-size: 60px;
+    }
+}

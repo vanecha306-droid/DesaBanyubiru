@@ -1,0 +1,283 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard - Desa Banyubiru</title>
+
+    <link rel="stylesheet" href="admin.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="admin.js" defer></script>
+</head>
+
+<body>
+
+<div class="dashboard-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">B</div>
+            <div>
+                <h2>Banyubiru</h2>
+                <span>ADMIN PANEL</span>
+            </div>
+        </div>
+
+        <div class="sidebar-label">MENU UTAMA</div>
+
+        <nav class="sidebar-nav">
+            <a href="#overview" class="nav-link active">
+                <span>▦</span> Overview
+            </a>
+
+            <a href="#players" class="nav-link">
+                <span>♙</span> Data Pemain
+            </a>
+
+            <a href="#progress" class="nav-link">
+                <span>◷</span> Progress Game
+            </a>
+
+            <a href="#chapterAccess" class="nav-link">
+    <span>🔒</span> Chapter Access
+</a>
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <div class="admin-profile">
+                <div class="avatar">A</div>
+                <div>
+                    <strong>Administrator</strong>
+                    <span>Game Manager</span>
+                </div>
+            </div>
+
+            <button id="logoutButton" class="logout-button">
+                ↪ Keluar
+            </button>
+
+        </div>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <p class="breadcrumb">Dashboard / Overview</p>
+                <h1>Dashboard</h1>
+            </div>
+
+            <div class="topbar-status">
+                <span class="status-dot"></span>
+                Sistem Administrasi
+            </div>
+        </header>
+
+        <!-- OVERVIEW -->
+        <section id="overview" class="welcome-section">
+            <div>
+                <p class="eyebrow">WELCOME BACK</p>
+                <h2>Selamat datang, Admin!</h2>
+                <p>Kelola pemain dan pantau perkembangan Desa Banyubiru.</p>
+            </div>
+
+            <div class="welcome-decoration">✦</div>
+        </section>
+
+        <!-- STATISTIK -->
+        <section class="stats-container">
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span>Total Pemain</span>
+                    <div class="stat-icon blue">♙</div>
+                </div>
+
+                <h2 id="totalPlayers">0</h2>
+                <p>Akun pemain terdaftar</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span>Progress Tersimpan</span>
+                    <div class="stat-icon purple">◷</div>
+                </div>
+
+                <h2 id="totalProgress">0</h2>
+                <p>Data progress permainan</p>
+            </div>
+
+        </section>
+
+        <!-- TAMBAH PEMAIN -->
+        <section class="dashboard-section" id="players">
+
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">PLAYER MANAGEMENT</p>
+                    <h2>Tambah Akun Pemain</h2>
+                    <p>Buat akun baru untuk pemain Desa Banyubiru.</p>
+                </div>
+
+                <div class="section-icon">＋</div>
+            </div>
+
+            <form id="createPlayerForm" class="player-form">
+
+                <div class="form-group">
+                    <label for="newUsername">Username</label>
+                    <input
+                        type="text"
+                        id="newUsername"
+                        placeholder="Masukkan username"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="newEmail">Email</label>
+                    <input
+                        type="email"
+                        id="newEmail"
+                        placeholder="Masukkan email pemain"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="newPassword">Password</label>
+                    <input
+                        type="password"
+                        id="newPassword"
+                        placeholder="Minimal 8 karakter"
+                        minlength="8"
+                        required
+                    >
+                </div>
+
+                <button type="submit" id="createPlayerButton">
+                    ＋ Buat Akun
+                </button>
+
+                <p id="createPlayerMessage"></p>
+
+            </form>
+
+        </section>
+
+        <!-- DAFTAR PEMAIN -->
+        <section class="dashboard-section">
+
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">PLAYER DATABASE</p>
+                    <h2>Daftar Pemain</h2>
+                    <p>Informasi akun pemain yang terdaftar.</p>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>Tanggal Bergabung</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="playersTable">
+                        <tr>
+                            <td colspan="4">Memuat pemain...</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+        </section>
+
+        <!-- PROGRESS -->
+        <section class="dashboard-section" id="progress">
+
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">GAME ACTIVITY</p>
+                    <h2>Progress Permainan</h2>
+                    <p>Pantau perkembangan permainan setiap pemain.</p>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Pemain</th>
+                            <th>Chapter</th>
+                            <th>Scene Terakhir</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="progressTable">
+                        <tr>
+                            <td colspan="4">Memuat progress...</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+        </section>
+
+        <!-- CHAPTER ACCESS -->
+<section class="dashboard-section" id="chapterAccess">
+
+    <div class="section-heading">
+        <div>
+            <p class="eyebrow">CHAPTER MANAGEMENT</p>
+            <h2>Pengaturan Akses Chapter</h2>
+            <p>Atur chapter yang bisa dimainkan oleh setiap pemain.</p>
+        </div>
+
+        <div class="section-icon">🔒</div>
+    </div>
+
+    <div class="form-group">
+        <label for="accessPlayer">Pilih Pemain</label>
+        <select id="accessPlayer">
+            <option value="">Memuat daftar pemain...</option>
+        </select>
+    </div>
+
+    <div id="chapterAccessList">
+        <p>Pilih pemain untuk melihat akses chapter.</p>
+    </div>
+
+    <p id="chapterAccessMessage"></p>
+
+</section>
+
+        <p id="adminMessage"></p>
+
+        <footer class="dashboard-footer">
+            Desa Banyubiru © 2026 · Administration Panel
+        </footer>
+
+    </main>
+
+</div>
+
+</body>
+</html>

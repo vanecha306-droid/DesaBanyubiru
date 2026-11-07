@@ -1,0 +1,122 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desa Pesisir - Chapter 1</title>
+    <link rel="stylesheet" href="chapter1.css">
+</head>
+
+<body>
+
+    <main class="scene-container">
+
+        <!-- BACKGROUND -->
+        <div class="scene-background">
+
+            <!-- GAPURA DESA -->
+            <div class="village-gate" id="villageGate">
+                <div class="gate-pillar left-pillar"></div>
+                <div class="gate-pillar right-pillar"></div>
+                <div class="gate-beam"></div>
+                <div class="gate-sign">DESA BANYUBIRU</div>
+            </div>
+
+            <!-- GERBANG KELUARGA SANTOSO -->
+            <div class="family-gate" id="familyGate">
+                <div class="family-pillar"></div>
+                <div class="family-sign">KELUARGA SANTOSO</div>
+                <div class="family-pillar"></div>
+            </div>
+            <img id="characterImage" class="character-sprite" src="" alt="Karakter">
+
+        </div>
+
+        <!-- KOTAK DIALOG -->
+        <section class="dialog-container">
+
+            <div class="dialog-name" id="speaker">
+                NARATOR
+            </div>
+
+            <p class="dialog-text" id="dialogText"></p>
+
+            <div class="dialog-footer">
+                <span class="scene-number" id="sceneNumber"></span>
+                <button id="nextButton">Selanjutnya →</button>
+            </div>
+
+        </section>
+
+ 
+
+        <!-- TOMBOL KELUAR -->
+        <button class="exit-story" id="exitButton">
+            ✕ Keluar
+        </button>
+
+    </main>
+
+
+    
+
+   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+(async function checkChapterAccess() {
+    const client = window.supabase.createClient(
+        "https://qwoabxhswjqgsamwgxex.supabase.co",
+        "sb_publishable_xfUCirPUJRXzHqz71JbFpg_71gnKcRQ"
+    );
+
+    const { data, error } = await client.auth.getSession();
+
+    if (error || !data.session) {
+        window.location.replace("login.html");
+        return;
+    }
+
+    const { data: profile, error: profileError } = await client
+        .from("profiles")
+        .select("role")
+        .eq("id", data.session.user.id)
+        .single();
+
+    if (profileError || !profile || profile.role !== "player") {
+        await client.auth.signOut();
+        window.location.replace("login.html");
+        return;
+    }
+
+    const { data: access, error: accessError } = await client
+        .from("chapter_access")
+        .select("is_unlocked")
+        .eq("user_id", data.session.user.id)
+        .eq("chapter_id", "chapter1")
+        .maybeSingle();
+
+    if (accessError || !access || access.is_unlocked !== true) {
+        window.location.replace("mulaipermainan.html");
+        return;
+    }
+})();
+</script>
+
+<div class="fade-transition" id="fadeTransition"></div>
+
+<script src="chapter1.js"></script>
+<div class="chapter-complete" id="chapterComplete">
+    <div class="complete-content">
+        <p>✦ CHAPTER 1 ✦</p>
+        <h1>COMPLETED</h1>
+        <span>Perjalanan akan berlanjut...</span>
+
+         <button onclick="backToChapter()">
+            Kembali ke Daftar Chapter →
+        </button>
+    </div>
+</div>
+</body>
+</html>
+

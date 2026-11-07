@@ -1,0 +1,539 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Desa BANYUBIRU - Game</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    overflow: hidden;
+    color: white;
+}
+
+/* BACKGROUND */
+.game-screen {
+    width: 100%;
+    height: 100vh;
+    min-height: 600px;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(
+        to bottom,
+        #f49b91 0%,
+        #f8b58c 35%,
+        #f8d19c 65%,
+        #e8b77c 100%
+    );
+}
+
+/* SUN */
+.sun {
+    position: absolute;
+    width: 125px;
+    height: 125px;
+    border-radius: 50%;
+    background: #ffe6a1;
+    top: 15%;
+    right: 19%;
+    box-shadow: 0 0 60px #ffe5a5;
+}
+
+/* CLOUDS */
+.cloud {
+    position: absolute;
+    font-size: 65px;
+    opacity: 0.55;
+    animation: moveCloud 35s linear infinite;
+}
+
+.cloud.one {
+    top: 12%;
+    left: -100px;
+}
+
+.cloud.two {
+    top: 28%;
+    left: -250px;
+    animation-delay: -15s;
+    font-size: 45px;
+}
+
+@keyframes moveCloud {
+    from { transform: translateX(0); }
+    to { transform: translateX(120vw); }
+}
+
+/* MOUNTAINS */
+.mountain {
+    position: absolute;
+    bottom: 31%;
+    width: 0;
+    height: 0;
+    border-left: 190px solid transparent;
+    border-right: 190px solid transparent;
+    border-bottom: 260px solid #9b7886;
+}
+
+.mountain.one {
+    left: 18%;
+}
+
+.mountain.two {
+    left: 42%;
+    border-left-width: 230px;
+    border-right-width: 230px;
+    border-bottom-width: 300px;
+    border-bottom-color: #a47c84;
+}
+
+/* DISTANT VILLAGE */
+.village {
+    position: absolute;
+    bottom: 25%;
+    width: 100%;
+    height: 180px;
+    display: flex;
+    justify-content: space-around;
+    align-items: end;
+}
+
+.house {
+    width: 120px;
+    height: 95px;
+    background: #b76f48;
+    position: relative;
+    border: 4px solid #704a39;
+    border-radius: 5px;
+}
+
+.house::before {
+    content: "";
+    position: absolute;
+    top: -48px;
+    left: -15px;
+    width: 140px;
+    height: 55px;
+    background: #784735;
+    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+
+.house::after {
+    content: "";
+    position: absolute;
+    width: 30px;
+    height: 55px;
+    bottom: 0;
+    left: 42px;
+    background: #684331;
+}
+
+/* RICE FIELD */
+.field {
+    position: absolute;
+    bottom: 0;
+    height: 30%;
+    width: 100%;
+    background: linear-gradient(
+        to bottom,
+        #82964c,
+        #667e42,
+        #4c633b
+    );
+    clip-path: polygon(0 10%, 100% 0, 100% 100%, 0 100%);
+}
+
+/* BEACH / SEA */
+.sea {
+    position: absolute;
+    bottom: 0;
+    height: 13%;
+    width: 100%;
+    background: linear-gradient(
+        to bottom,
+        #75b9b4,
+        #367f88
+    );
+    opacity: 0.95;
+}
+
+.sea::after {
+    content: "";
+    position: absolute;
+    top: 12px;
+    width: 100%;
+    height: 3px;
+    background: #d9e7b5;
+    opacity: 0.7;
+}
+
+/* FRONT DECORATION */
+.tree {
+    position: absolute;
+    bottom: 17%;
+    font-size: 100px;
+    z-index: 2;
+    filter: drop-shadow(2px 5px 3px #403b2c66);
+}
+
+.tree.left {
+    left: 2%;
+}
+
+.tree.right {
+    right: 3%;
+}
+
+/* GAME MENU */
+.menu {
+    position: absolute;
+    z-index: 10;
+    top: 8%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    width: min(90%, 600px);
+}
+
+.game-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(40px, 6vw, 72px);
+    font-weight: 800;
+    color: #fff2ce;
+    text-shadow:
+        3px 4px 0 #75462e,
+        0 0 20px #734a2e;
+    margin-bottom: 8px;
+    animation: titleFloat 3s ease-in-out infinite;
+}
+
+.subtitle {
+    font-size: 13px;
+    letter-spacing: 4px;
+    color: #fff7d9;
+    margin-bottom: 35px;
+}
+
+@keyframes titleFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+/* BUTTONS */
+.buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+    align-items: center;
+}
+
+.game-button {
+    width: 260px;
+    padding: 14px 20px;
+    border: 2px solid #ffe3ae;
+    border-radius: 30px;
+    background: linear-gradient(
+        135deg,
+        #fff0ce,
+        #e9bd85
+    );
+    color: #70432c;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 5px 0 #9d6544;
+    transition: 0.25s;
+}
+
+.game-button:hover {
+    transform: translateY(-5px) scale(1.04);
+    background: #fff7e4;
+    box-shadow: 0 9px 0 #9d6544;
+}
+
+.game-button:active {
+    transform: translateY(3px);
+    box-shadow: 0 2px 0 #9d6544;
+}
+
+/* FIREFLIES */
+.firefly {
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    background: #fff3a6;
+    border-radius: 50%;
+    box-shadow: 0 0 15px #fff3a6;
+    animation: glow 2s infinite alternate;
+    z-index: 3;
+}
+
+@keyframes glow {
+    from {
+        opacity: 0.2;
+        transform: scale(0.6);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1.4);
+    }
+}
+
+/* FOOTER */
+.footer {
+    position: absolute;
+    bottom: 3%;
+    width: 100%;
+    text-align: center;
+    font-size: 11px;
+    color: #fff3d6;
+    z-index: 10;
+    text-shadow: 1px 2px 3px #493a2c;
+}
+
+/* POPUP */
+.popup {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #201a1a99;
+    z-index: 20;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.popup-content {
+    background: #fff0d2;
+    color: #69452f;
+    width: min(90%, 400px);
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 10px 30px #0005;
+}
+
+.popup-content h2 {
+    font-family: 'Playfair Display', serif;
+    margin-bottom: 15px;
+}
+
+.popup-content p {
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.close-button {
+    margin-top: 20px;
+    padding: 10px 30px;
+    border: none;
+    border-radius: 20px;
+    background: #9d6544;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+    .game-screen {
+        min-height: 600px;
+    }
+
+    .menu {
+        top: 13%;
+    }
+
+    .subtitle {
+        margin-bottom: 25px;
+    }
+
+    .game-button {
+        width: 230px;
+    }
+
+    .mountain {
+        transform: scale(0.65);
+        transform-origin: bottom;
+    }
+
+    .house {
+        transform: scale(0.7);
+        transform-origin: bottom;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="game-screen">
+
+    <div class="sun"></div>
+
+    <div class="cloud one">☁️</div>
+    <div class="cloud two">☁️</div>
+
+    <div class="mountain one"></div>
+    <div class="mountain two"></div>
+
+    <div class="village">
+        <div class="house"></div>
+        <div class="house"></div>
+        <div class="house"></div>
+    </div>
+
+    <div class="field"></div>
+    <div class="sea"></div>
+
+    <div class="tree left">🌳</div>
+    <div class="tree right">🌴</div>
+
+    <div class="firefly" style="top:55%;left:15%"></div>
+    <div class="firefly" style="top:65%;left:80%"></div>
+    <div class="firefly" style="top:45%;left:70%"></div>
+    <div class="firefly" style="top:75%;left:35%"></div>
+
+    <div class="menu">
+
+        <h1 class="game-title">
+            DESA BANYUBIRU
+        </h1>
+
+        <p class="subtitle">
+            SEBUAH KISAH DARI TANAH JAWA
+        </p>
+
+       
+<div class="buttons">
+
+    <button class="game-button"
+        onclick="startGame()">
+        ▶ Mulai Permainan
+    </button>
+
+    <button class="game-button"
+        onclick="window.location.href='karakter.html'">
+        ☾ Buku Karakter
+    </button>
+
+    <button class="game-button"
+        onclick="showPopup('settings')">
+        ⚙ Pengaturan
+    </button>
+
+    <button class="game-button"
+        onclick="showPopup('about')">
+        ✦ Tentang Game
+    </button>
+
+    <button class="game-button"
+        onclick="exitGame()">
+        ✕ Keluar
+    </button>
+
+</div>
+
+    </div>
+
+    <div class="footer">
+        © 2026 DESA BANYUBIRU | Sebuah petualangan dimulai dari sini
+    </div>
+
+</div>
+
+<!-- POPUP -->
+<div class="popup" id="popup">
+    <div class="popup-content">
+        <h2 id="popup-title"></h2>
+        <p id="popup-text"></p>
+        <button class="close-button"
+            onclick="closePopup()">
+            Kembali
+        </button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://qwoabxhswjqgsamwgxex.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_xfUCirPUJRXzHqz71JbFpg_71gnKcRQ";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+);
+
+// CEK LOGIN
+async function checkLogin() {
+    const { data, error } = await supabaseClient.auth.getSession();
+
+    console.log("SESSION:", data.session);
+    console.log("ERROR:", error);
+
+    if (error || !data.session) {
+        window.location.replace("login.html");
+    } else {
+        console.log("Pemain masih login.");
+    }
+}
+
+checkLogin();
+
+checkLogin();
+
+// POPUP
+function showPopup(type) {
+    const popup = document.getElementById("popup");
+    const title = document.getElementById("popup-title");
+    const text = document.getElementById("popup-text");
+
+    popup.style.display = "flex";
+
+    if (type === "settings") {
+        title.innerText = "Pengaturan";
+        text.innerHTML = `
+            Pengaturan permainan akan tersedia di sini.
+            <br><br>
+            <label>Volume Musik</label>
+            <input type="range" min="0" max="100" value="50">
+        `;
+    }
+
+    if (type === "about") {
+        title.innerText = "Tentang Game";
+        text.innerText =
+        "Sebuah kisah petualangan yang membawa pemain menjelajahi kehidupan, budaya, dan misteri sebuah desa di tanah Jawa.";
+    }
+}
+
+function closePopup() {
+    document.getElementById("popup").style.display = "none";
+}
+
+function startGame() {
+    window.location.href = "mulaipermainan.html";
+}
+
+function exitGame() {
+    showPopup("about");
+}
+</script>
+</body>
+</html>
+
+
+</body>
+</html>
